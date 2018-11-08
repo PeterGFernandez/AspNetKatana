@@ -246,8 +246,6 @@ namespace Microsoft.Owin.Security.OpenIdConnect
                 {
                     _logger.WriteWarning("The state field is missing or invalid.");
                     throw new StateException("State is missing or invalid");
-//                    Response.StatusCode = 500;
-//                    return null;
                 }
 
                 // devs will need to hook AuthenticationFailedNotification to avoid having 'raw' runtime errors displayed to users.
