@@ -217,9 +217,15 @@ namespace Microsoft.Owin.Security.OpenIdConnect
                 openIdConnectMessage = new OpenIdConnectMessage(form);
             }
 
+            /*
+             * For Passwordless connections, Auth0 issues a GET (and not a POST) which means the above conditional test fails.
+             * In this situation we let the application handle the condition - e.g. use Auth0's SSO capability to silently
+             * re-authenticate via a more established workflow.  
+             */
             if (openIdConnectMessage == null)
             {
-                return null;
+                _logger.WriteWarning("`openIdConnectMessage` is missing or invalid.");
+                throw new StateException("`openIdConnectMessage` is missing or invalid.");
             }
 
             ExceptionDispatchInfo authFailedEx = null;
@@ -245,7 +251,7 @@ namespace Microsoft.Owin.Security.OpenIdConnect
                 if (properties == null)
                 {
                     _logger.WriteWarning("The state field is missing or invalid.");
-                    throw new StateException("State is missing or invalid");
+                    throw new StateException("The state field is missing or invalid.");
                 }
 
                 // devs will need to hook AuthenticationFailedNotification to avoid having 'raw' runtime errors displayed to users.
